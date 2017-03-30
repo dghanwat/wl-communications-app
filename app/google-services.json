@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "752660075353",
+    "firebase_url": "https://worldine-communications.firebaseio.com",
+    "project_id": "worldine-communications",
+    "storage_bucket": "worldine-communications.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752660075353:android:bacda83e7802657b",
+        "android_client_info": {
+          "package_name": "com.worldline.comm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752660075353-dcs3d8vo23fhhbqb8tdi8phor2v4h770.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAInIh4wOOjiljSch22dDXsIQ5rs6EcVp4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
