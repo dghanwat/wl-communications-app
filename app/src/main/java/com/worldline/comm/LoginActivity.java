@@ -3,6 +3,7 @@ package com.worldline.comm;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 
 import android.content.Intent;
@@ -12,10 +13,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.worldline.comm.Utils.UTIL;
 import com.worldline.comm.landingpage.HomeActivity;
+import com.worldline.comm.pojo.LoginResponse;
+import com.worldline.comm.requestpojo.LoginRequest;
+import com.worldline.comm.webservice.Api;
+
+import java.nio.charset.StandardCharsets;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import retrofit2.Response;
+import rx.Observer;
+import rx.Scheduler;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -46,10 +59,10 @@ public class LoginActivity extends AppCompatActivity {
     public void login() {
         Log.d(TAG, "Login");
 
-        if (!validate()) {
+       /* if (!validate()) {
             onLoginFailed();
             return;
-        }
+        }*/
 
         _loginButton.setEnabled(false);
 
@@ -59,12 +72,19 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String email = _emailText.getText().toString();
+        final String password = _passwordText.getText().toString();
+
+        byte[] data = password.getBytes();
+
+        String base64Password = Base64.encodeToString(data, Base64.DEFAULT);
+
+        final LoginRequest loginRequest = new LoginRequest(email, base64Password);
+
 
         // TODO: Implement your own authentication logic here.
 
-        new android.os.Handler().postDelayed(
+        /*new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onLoginSuccess or onLoginFailed
@@ -72,7 +92,34 @@ public class LoginActivity extends AppCompatActivity {
                         // onLoginFailed();
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 3000);*/
+
+        Api.userManagement().userLogin(loginRequest)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Response<LoginResponse>>() {
+            @Override
+            public void onCompleted() {
+                if (progressDialog != null)
+                    progressDialog.dismiss();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Response<LoginResponse> loginResponse) {
+                if (loginResponse.code() == 200) {
+                    onLoginSuccess();
+                } else {
+                    _loginButton.setEnabled(true);
+                    UTIL.showShortToast(getApplicationContext(), getResources().getString(R.string.unauthorizeduser));
+                }
+            }
+        });
+
+
     }
 
 
