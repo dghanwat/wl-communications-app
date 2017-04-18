@@ -6,5 +6,10 @@
     <string name="No_Notification_Available">No Notification Available</string>
     <string name="home">Home</string>
     <string name="unauthorizeduser">Unauthorized User</string>
+    <string name="pdafreader">PDF Reader</string>
+    <string name="logout">Logout</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 
 </resources>

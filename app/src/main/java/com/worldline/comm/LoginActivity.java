@@ -105,7 +105,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onError(Throwable e) {
-
+                if (progressDialog != null)
+                    progressDialog.dismiss();
+                onLoginFailed();
             }
 
             @Override

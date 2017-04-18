@@ -4,23 +4,32 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.worldline.comm.LoginActivity;
 import com.worldline.comm.Model.Notification;
 import com.worldline.comm.R;
 import com.worldline.comm.Utils.Constant;
+import com.worldline.comm.pdfreader.PDFReaderActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     @Bind(R.id.toolbar)
@@ -50,6 +59,11 @@ public class HomeActivity extends AppCompatActivity {
     @Bind(R.id.emptylistview)
     View emptylistviewContainer;
 
+    @Bind(R.id.navigation_view)
+    NavigationView navigation_view;
+
+    @Bind(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
     private BroadCast broadCast;
 
@@ -66,6 +80,12 @@ public class HomeActivity extends AppCompatActivity {
 
         broadCast = new BroadCast();
 
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigation_view.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -85,6 +105,41 @@ public class HomeActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadCast);
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        Intent intent;
+        switch (id) {
+            case R.id.home:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.pdf:
+                intent = new Intent(this, PDFReaderActivity.class);
+                startActivity(intent);
+                break;
+
+            case R.id.logout:
+                intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START))
+            drawerLayout.closeDrawer(Gravity.START);
+        else
+            super.onBackPressed();
+    }
 
     private class BroadCast extends BroadcastReceiver {
 
